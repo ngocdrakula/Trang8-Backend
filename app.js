@@ -18,7 +18,7 @@ const sharedsession = require("express-socket.io-session");
 
 const app = express();
 
-app.use(cors({origin:['http://trang8.herokuapp.com/'], credentials: true}))
+app.use(cors({origin:['http://trang8.herokuapp.com'], credentials: true}))
 app.use(session);
 
 if(0)
