@@ -86,7 +86,7 @@ app.use("/image", imageRouter);
 const apiRouter = require("./routers/api");
 app.use("/api", apiRouter);
 
-server = app.listen(1505, (err) => {
+server = app.listen(3000, (err) => {
     if(err){
         console.log(err);
     }
