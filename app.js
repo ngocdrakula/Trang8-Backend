@@ -11,9 +11,6 @@ const session = require('express-session')({
         maxAge: 7*24*60*60*1000
     }
 });
-const multer = require('multer');
-const path = require('path');
-
 const sharedsession = require("express-socket.io-session");
 
 const app = express();
@@ -86,7 +83,7 @@ app.use("/image", imageRouter);
 const apiRouter = require("./routers/api");
 app.use("/api", apiRouter);
 
-server = app.listen(3000, (err) => {
+server = app.listen(1505, (err) => {
     if(err){
         console.log(err);
     }

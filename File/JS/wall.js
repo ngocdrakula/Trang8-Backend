@@ -308,10 +308,6 @@ function adjustAvatar(url){
                 selected.style.margin = `${marginTop}px 0px 0px ${marginLeft}px`;
                 background.style.margin = `${marginTop}px 0px 0px ${marginLeft}px`;
             }
-            console.log({
-                x: selected.offsetLeft,
-                y: selected.offsetTop, 
-            })
         }
         xMouse = e.clientX;
         yMouse = e.clientY;
@@ -564,7 +560,6 @@ function renderBasicInfo() {
             else if(friendly > -1){
                 type = 'unfriend';
             }
-            console.log({type: type, to: member})
             fetch('/profile/relation',
             {
                 method: 'PUT',
@@ -574,7 +569,6 @@ function renderBasicInfo() {
                 body: JSON.stringify({type: type, to: member})
             }).then(result => {
                 result.json().then(data => {
-                    console.log(data)
                     if(data.success){
                         if(friendly == 2){
                             friendText.innerHTML = 'Bạn bè';
@@ -594,8 +588,6 @@ function renderBasicInfo() {
                             friendly = -1;
                         }
                     }
-                    else
-                        console.log(data)
                 }).catch(err => {
                     console.log(err)
                 })
@@ -628,8 +620,6 @@ function renderBasicInfo() {
                             follower = 1;
                         }
                     }
-                    else
-                        console.log(data)
                 }).catch(err => {
                     console.log(err)
                 })
@@ -812,7 +802,6 @@ function renderAdvancedInfo(data) {
             result.json()
             .then(postList => {
                 if(postList.success){
-                    console.log(postList);
                     var imageContainer = document.getElementById("imageContainer");
                     imageContainer.innerHTML = "";
                     postList.data.map((post, index) => {

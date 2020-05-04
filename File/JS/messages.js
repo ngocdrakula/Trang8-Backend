@@ -145,7 +145,6 @@ function messagebox(to){
         }).then(result => {
             result.json()
             .then(data => {
-                console.log(data)
                 if(data.success){
                     if(!data.data){
                         document.getElementById(`loader_inbox_${to._id}`).innerHTML = "Bạn hãy là người bắt đầu cuộc trò chuyện!";

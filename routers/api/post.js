@@ -483,7 +483,6 @@ postRouter.get("/image/:id", (req, res) => {
                 }
             }
         }
-        console.log(query)
         let listpost = await postController.getlist(query).sort({createdAt: -1});
         return(listpost)
     }

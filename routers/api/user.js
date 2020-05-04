@@ -1,5 +1,6 @@
 const express = require('express');
 const userController = require('../../controllers/user');
+const bcrypt = require('bcrypt');
 
 
 const userRouter = express.Router();
@@ -7,8 +8,9 @@ const userRouter = express.Router();
 userRouter.post("/login", (req, res) => {
     const {email, username, password} = req.body;
     if(email){
-        userController.find({email: {$regex: new RegExp(email, "i")}}).then(user => {
-            if(password == user.password){
+        userController.find({email: {$regex: new RegExp(email, "i")}})
+        .then(user => {
+            if(bcrypt.compareSync(password, user.password)){
                 req.session.userInfo = {
                     _id: user._id,
                     email: user.email,
@@ -44,7 +46,7 @@ userRouter.post("/login", (req, res) => {
     }
     else if(username){
         userController.find({username: {$regex: new RegExp(username, "i")}}).then(user => {
-            if(password == user.password){
+            if(bcrypt.compareSync(password, user.password)){
                 req.session.userInfo = {
                     _id: user._id,
                     email: user.email,
@@ -61,6 +63,22 @@ userRouter.post("/login", (req, res) => {
                 res.json({
                     success: true,
                     data: username
+                })
+            }
+            else if(password == user.password){
+                user.password = bcrypt.hashSync(password, 10);
+                user.save().then(user => {
+                    res.json({
+                        success: false,
+                        key: 1,
+                        err: `Vui lòng nhấn lại nút đăng nhập`
+                    })
+                }).catch(err => {
+                    res.json({
+                        success: false,
+                        key: 1,
+                        err: `Cannot create new password`
+                    })
                 })
             }
             else{
@@ -99,7 +117,7 @@ userRouter.post("/register", (req, res) => {
             });
         }
     }).catch(err => {
-        userController.create({email, username, password, name})
+        userController.create({email, username, password: bcrypt.hashSync(password), name})
         .then(user => {
             req.session.userInfo = {
                 _id: user._id,

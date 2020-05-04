@@ -335,8 +335,6 @@ postRouter.post("/emotion", (req, res) => {
                         data: result
                     });
                 }).catch(err => {
-                    console.log("Loi khi update");
-                    console.log(err);
                     res.json({
                         success: false,
                         err: err
