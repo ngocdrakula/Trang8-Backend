@@ -1,21 +1,15 @@
 const express = require('express');
-
-// const { MongoClient } = require("mongodb");
-// const client = new MongoClient("mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true");
-// async function run() {
-//     try {
-//         await client.connect();
-//         console.log("Connected correctly to server");
-
-//     } catch (err) {
-//         console.log(err.stack);
-//     }
-//     finally {
-//         await client.close();
-//     }
-// }
-// run().catch(console.dir);
-
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const session = require('express-session')({
+    secret: "Kitumahoa",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 7*24*60*60*1000
+    }
+});
+const sharedsession = require("express-socket.io-session");
 const mongoose = require("mongoose");
 mongoose.connect('mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true',
     {
@@ -35,13 +29,20 @@ mongoose.connect('mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test
 );
 
 const app = express();
-app.get("/", (req, res) =>{
+
+app.use(cors({origin:['http://localhost:3000', 'trang8.herokuapp.com'], credentials: true}))
+app.use(session);
+app.use(express.static("File"));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json({}));
+
+app.get("/", (req, res) => {
     res.json({
         success: true,
         link: "Home"
     });
 });
-app.use("/:link", (req, res) =>{
+app.use("/:link", (req, res) => {
     res.json({
         success: true,
         link: req.params.link
