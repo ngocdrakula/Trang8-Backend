@@ -84,6 +84,9 @@ imageRouter.get("/cover/:id", (req, res) => {
     });
 });
 
+imageRouter.get('/', (req, res) => {
+    res.redirect('/IMG/no-avatar.jpg');
+});
 
 
 module.exports = imageRouter;
