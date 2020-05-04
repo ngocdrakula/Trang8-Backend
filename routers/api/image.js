@@ -9,14 +9,13 @@ const imageRouter = express.Router();
 
 imageRouter.get("/avatar/:id", (req, res) => {
     var _id = req.params.id;
-    var top = 0; var left = 0;
-    var width = 200; var height = 200;
-    var image = "no-avatar.jpg";
     userController.get({_id: _id})
     .populate('avatar.origin')
     .then(user => {
         if(user.avatar.origin){
-            image = user.avatar.origin.image;
+            var top = 0; var left = 0;
+            var width = 200; var height = 200;
+            var image = user.avatar.origin.image;
             width = Math.max(user.avatar.size.width, 200);
             height = Math.max(user.avatar.size.height, 200)
             top = Math.min(Math.max((-user.avatar.position.y), 0), height-200);
@@ -52,10 +51,10 @@ imageRouter.get("/avatar/:id", (req, res) => {
             }
         }
         else{
-            res.redirect('/photo/no-avatar.jpg');
+            res.redirect('/IMG/no-avatar.jpg');
         }
     }).catch(err => {
-        res.redirect('/photo/no-avatar.jpg');
+        res.redirect('/IMG/no-avatar.jpg');
     });
 });
 imageRouter.get('/avatar/', (req, res) => {
