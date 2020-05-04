@@ -45,6 +45,13 @@ app.get("/", (req, res) => {
 const apiRouter = require("./routers/api");
 app.use("/api", apiRouter);
 
+app.use("/:link", (req, res) => {
+    res.json({
+        success: false,
+        link: undefined,
+        undefined: req.params.link
+    });
+});
 server = app.listen(process.env.PORT || 3000, (err) => {
     if(err){
         console.log(err);
@@ -52,4 +59,20 @@ server = app.listen(process.env.PORT || 3000, (err) => {
     else{
         console.log("Server start!");
     }
+});
+const io = require("socket.io")(server);
+io.use(sharedsession(session, {
+    autoSave:true
+}));
+app.set('socketio', io);
+io.on('connection', (socket) => {
+    socket.on('online', (data) => {
+        if(socket.handshake.session.userInfo){
+            var userInfo = socket.handshake.session.userInfo;
+            io.sockets.emit('online', {
+                _id: userInfo._id,
+                username: userInfo.username
+            });
+        }
+    });
 });
