@@ -117,7 +117,7 @@ userRouter.post("/register", (req, res) => {
             });
         }
     }).catch(err => {
-        userController.create({email, username, password: bcrypt.hashSync(password), name})
+        userController.create({email, username, password: bcrypt.hashSync(password, 10), name})
         .then(user => {
             req.session.userInfo = {
                 _id: user._id,
