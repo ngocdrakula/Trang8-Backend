@@ -1,24 +1,22 @@
 const express = require('express');
-const { MongoClient } = require("mongodb");
+
+// const { MongoClient } = require("mongodb");
+// const client = new MongoClient("mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true");
+// async function run() {
+//     try {
+//         await client.connect();
+//         console.log("Connected correctly to server");
+
+//     } catch (err) {
+//         console.log(err.stack);
+//     }
+//     finally {
+//         await client.close();
+//     }
+// }
+// run().catch(console.dir);
+
 const mongoose = require("mongoose");
- 
-const client = new MongoClient("mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true");
-
-async function run() {
-    try {
-        await client.connect();
-        console.log("Connected correctly to server");
-
-    } catch (err) {
-        console.log(err.stack);
-    }
-    finally {
-        await client.close();
-    }
-}
-
-run().catch(console.dir);
-
 mongoose.connect('mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test?retryWrites=true&w=majority&useNewUrlParser=true&useUnifiedTopology=true',
     {
         useFindAndModify: false,
