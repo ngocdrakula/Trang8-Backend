@@ -5,9 +5,10 @@
         "bcrypt": "^3.0.8",
         "cors": "^2.8.5",
         "express": "^4.17.1",
-        "express-session": "^1.17.0"
+        "express-session": "^1.17.0",
+        "mongoose": "^5.9.11"
     },
     "scripts": {
-      "start": "node app.js"
+        "start": "node app.js"
     }
 }
