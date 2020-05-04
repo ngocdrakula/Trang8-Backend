@@ -26,10 +26,10 @@ mongoose.connect('mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test
     },
     (err) => {
         if(err){
-            console.log(err);
+            console.log("DB can't connect: ", err);
         }
         else{
-            console.log("DB conected!")
+            console.log("DB connected!")
         }
     }
 );
