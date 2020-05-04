@@ -63,7 +63,7 @@ imageRouter.get('/avatar/', (req, res) => {
         res.redirect('/api/image/avatar/' + req.session.userInfo._id)
     }
     else{
-        res.redirect('/photo/no-avatar.jpg');
+        res.redirect('/IMG/no-avatar.jpg');
     }
 });
 imageRouter.get("/cover/:id", (req, res) => {
