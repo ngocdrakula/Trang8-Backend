@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-<<<<<<< HEAD
 const mongoose = require('mongoose');
 const cors = require('cors');
 
@@ -12,15 +11,31 @@ const session = require('express-session')({
         maxAge: 7*24*60*60*1000
     }
 });
+const multer = require('multer');
+const path = require('path');
+
 const sharedsession = require("express-socket.io-session");
 
-=======
->>>>>>> d1ec725d91964ad5c05d1c6fcc265572e00aa417
 const app = express();
+
+app.use(cors({origin:['http://localhost:3000'], credentials: true}))
+app.use(session);
+
+if(0)
+    app.use("/", (req, res, next) => {
+        if(!req.session.userInfo)
+            req.session.userInfo = {
+                "_id":"5e4671580a2f561b50cc2e2b",
+                "email":"ngocdrakula1@gmail.com",
+                "username":"Admintranstors",
+                "name":"Ngocdrakula",
+                "last":1584363434165
+            };
+        next();
+    });
 app.use(express.static("File"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json({}));
-<<<<<<< HEAD
 
 mongoose.connect('mongodb://localhost/trang8',
     {
@@ -71,10 +86,7 @@ app.use("/image", imageRouter);
 const apiRouter = require("./routers/api");
 app.use("/api", apiRouter);
 
-server = app.listen(1505, (err) => {
-=======
 server = app.listen(process.env.PORT || 3000, (err) => {
->>>>>>> d1ec725d91964ad5c05d1c6fcc265572e00aa417
     if(err){
         console.log(err);
     }
@@ -82,6 +94,23 @@ server = app.listen(process.env.PORT || 3000, (err) => {
         console.log("Server start!");
     }
 });
-app.get("/", (req, res) => {
+const io = require("socket.io")(server);
+io.use(sharedsession(session, {
+    autoSave:true
+}));
+app.set('socketio', io);
+io.on('connection', (socket) => {
+    socket.on('online', (data) => {
+        if(socket.handshake.session.userInfo){
+            var userInfo = socket.handshake.session.userInfo;
+            io.sockets.emit('online', {
+                _id: userInfo._id,
+                username: userInfo.username
+            });
+        }
+    });
+});
+
+app.use("", (req, res) => {
     res.sendFile("HTML/404.html", { root: __dirname });
 });
