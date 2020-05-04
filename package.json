@@ -2,11 +2,8 @@
     "version": "0.2.0",
     "configurations": [],
     "dependencies": {
-<<<<<<< HEAD
         "bcrypt": "^3.0.8",
         "cors": "^2.8.5",
-=======
->>>>>>> d1ec725d91964ad5c05d1c6fcc265572e00aa417
         "express": "^4.17.1",
         "express-session": "^1.17.0"
     },
