@@ -38,7 +38,7 @@ const app = express();
 app.get("/", (req, res) =>{
     res.json({
         success: true,
-        link: "Home"
+        link: "Home Page"
     });
 });
 app.use("/:link", (req, res) =>{
