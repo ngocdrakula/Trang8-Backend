@@ -42,12 +42,9 @@ app.get("/", (req, res) => {
         link: "Home"
     });
 });
-app.use("/:link", (req, res) => {
-    res.json({
-        success: true,
-        link: req.params.link
-    });
-});
+const apiRouter = require("./routers/api");
+app.use("/api", apiRouter);
+
 server = app.listen(process.env.PORT || 3000, (err) => {
     if(err){
         console.log(err);
