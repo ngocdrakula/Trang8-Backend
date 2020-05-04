@@ -30,7 +30,9 @@ mongoose.connect('mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test
 
 const app = express();
 
-app.use(cors({origin:['http://trang8.herokuapp.com', 'http://localhost:3000'], credentials: true}))
+app.use(cors({
+    origin:['http://localhost:3000'],
+    credentials: true}))
 app.use(session);
 app.use(express.static("File"));
 app.use(bodyParser.urlencoded({extended: false}));
