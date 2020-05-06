@@ -18,6 +18,7 @@ cloudinary.config({
 
 let diskStorage = multer.diskStorage({
     destination: (req, file, callback) => {
+        console.log(__dirname);
         callback(null, "./temp");
     },
     filename: (req, file, callback) => {
@@ -27,6 +28,7 @@ let diskStorage = multer.diskStorage({
             return callback(errorMess, null);
         }
         let filename = `${req.session.userInfo._id}_${Date.now()}${path.extname(file.originalname)}`;
+        console.log(file.originalname)
         callback(null, filename);
     }
 });
