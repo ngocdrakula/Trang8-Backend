@@ -2,63 +2,31 @@ const express = require('express');
 const postRouter = express.Router();
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 
 const postController = require('../../controllers/post');
 const activeController = require('../../controllers/active');
 const userController = require('../../controllers/user');
 
 
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({
-    cloud_name: 'ngocdrakula',
-    api_key: '143468887975713',
-    api_secret: "djPJ1bP4VSXopkCDrlZ9cOCLYWk"
-    });
 
 let diskStorage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "uploads");
+        callback(null, "File/photo");
     },
     filename: (req, file, callback) => {
         let math = ["image/png", "image/jpeg", "image/gif"];
-        if(math.indexOf(file.mimetype) == -1){
-            let errorMess = "This type file is not allowed";
-            return callback(errorMess, null);
-        }
-        let filename = `${req.session.userInfo._id}_${Date.now()}${path.extname(file.originalname)}`;
-        callback(null, filename);
+    if(math.indexOf(file.mimetype) == -1){
+        let errorMess = "This type file is not allowed";
+        return callback(errorMess, null);
+    }
+    let filename = `${req.session.userInfo._id}_${Date.now()}${path.extname(file.originalname)}`;
+    callback(null, filename);
     }
 });
-let uploadFile = (req, res, callback) => {
-    multer({storage: diskStorage}).single("file")(req, res, (error) => {
-        if(error){
-            callback(error);
-        }
-        else{
-            if(!req.file){
-                callback(null);
-            }
-            else{
-                cloudinary.uploader.upload(
-                    req.file.path,
-                    { public_id: `photo/${req.file.filename}`}, // directory and tags are optional
-                    function(err, image){
-                        if(err){
-                            callback(err);
-                        }
-                        else{
-                            fs.unlinkSync(req.file.path);
-                            callback(null);
-            
-                    }
-                });
-            }
-        }
-    });
-}
+let uploadFile = multer({storage: diskStorage}).single("file");
 
-postRouter.post("/post", (req, res) => {
+
+postRouter.post("/", (req, res) => {
     var author = req.session.userInfo;
     if(author){
         uploadFile(req, res, (error) => {
