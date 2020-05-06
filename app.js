@@ -31,9 +31,16 @@ mongoose.connect('mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test
 const app = express();
 
 app.use(cors({
-    origin:['http://trang8.herokuapp.com', 'http://localhost:3000'],
-    methods:['http://trang8.herokuapp.com', 'http://localhost:3000'],
-    credentials: true}))
+    'allowedHeaders': ['sessionId', 'Content-Type'],
+    'exposedHeaders': ['sessionId'],
+    'origin': '*',
+    'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    'preflightContinue': false
+  }));
+// app.use(cors({
+//     origin:['http://trang8.herokuapp.com', 'http://localhost:3000'],
+//     methods:['http://trang8.herokuapp.com', 'http://localhost:3000'],
+//     credentials: true}))
 app.use(session);
 if(0){
     app.use('', (req, res, next) => {
