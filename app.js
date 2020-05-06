@@ -34,16 +34,17 @@ app.use(cors({
     origin:['http://trang8.herokuapp.com', 'http://localhost:3000'],
     credentials: true}))
 app.use(session);
-app.use('', (req, res, next) => {
-    req.session.userInfo = {
-        _id: "user._id",
-        email: "email",
-        username: "username",
-        name: "user.name",
-        last: Date.now()
-    }
-    next();
-})
+if(0){
+    app.use('', (req, res, next) => {
+        req.session.userInfo = {
+            _id: "user._id",
+            email: "email",
+            username: "username",
+            name: "user.name",
+            last: Date.now()
+        }
+        next();
+    });}
 app.use(express.static("File"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json({}));
