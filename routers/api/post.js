@@ -32,32 +32,187 @@ let diskStorage = multer.diskStorage({
 });
 let uploadFile = (req, res, callback) => {
     multer({storage: diskStorage}).single("file")(req, res, (error) => {
-        if(error){
-            callback(error);
+        if(error || !req.file){
+            return callback(error);
         }
-        else{
-            if(!req.file){
-                callback(null);
+        cloudinary.uploader.upload(
+            req.file.path,
+            { public_id: `photo/${req.file.filename}`}, // directory and tags are optional
+            (err, image) => {
+                fs.unlinkSync(req.file.path);
+                return callback(err);
             }
-            else{
-                cloudinary.uploader.upload(
-                    req.file.path,
-                    { public_id: `photo/${req.file.filename}`}, // directory and tags are optional
-                    function(err, image){
-                        if(err){
-                            callback(err);
-                        }
-                        else{
-                            fs.unlinkSync(req.file.path);
-                            callback(null);
-            
-                    }
-                });
-            }
-        }
+        );
     });
 }
 
+postRouter.post("/", (req, res) => {
+    var author = req.session.userInfo;
+    if(author){
+        uploadFile(req, res, (error) => {
+            if(error){
+                return res.json({
+                    success: false,
+                    error: error,
+                    code: "Không thể upload ảnh"
+                });
+            }
+            const {status, feeling, privacy, to, infoData} = req.body;
+            var infoImage;
+            if(infoData)
+                infoImage = JSON.parse(infoData);
+            var member = to;
+            if(author._id == to) member = "";
+            var image = "";
+            if(req.file) image = req.file.filename;
+            if((status!="" || feeling>0 || image!="")||(image!="" && infoImage)){
+                var imageType = 0;
+                if(infoImage){
+                    if(infoImage.avatar) imageType = 1;
+                    else imageType = 2;
+                }
+                activeController.create({}).then(activeCreated => {
+                    var newStastus = {
+                        status, feeling, privacy,
+                        author: req.session.userInfo._id,
+                        active: activeCreated._id,
+                        image: image,
+                        imageType: imageType
+                    }
+                    if(member && member!="") newStastus.to = member;
+                    postController.create(newStastus)
+                    .then(postCreated => {
+                        postCreated.populate('author', 'username').populate('to', 'username')
+                        .populate({ 
+                            path: 'active',
+                            populate: [
+                                {
+                                    path: 'comment.author',
+                                    model: 'user',
+                                    select: 'username'
+                                },
+                                {
+                                    path: 'emotion.author',
+                                    model: 'user',
+                                    select: 'username'
+                                },
+                                {
+                                    path: 'comment.emotion.author',
+                                    model: 'user',
+                                    select: 'username'
+                                }
+                            ]
+                        }).execPopulate().then(postCreated => {
+                            if(infoImage && image != ""){
+                                var dataChange = {};
+                                var key = "_id";
+                                if(infoImage.avatar){
+                                    dataChange = {
+                                        'avatar.position': infoImage.avatar.position,
+                                        'avatar.size': infoImage.avatar.size,
+                                        'avatar.origin': postCreated._id
+                                    };
+                                    key = 'avatar';
+                                }
+                                else if(infoImage.cover){
+                                    dataChange = {
+                                        'cover.position': infoImage.cover.position,
+                                        'cover.size': infoImage.cover.size,
+                                        'cover.origin': postCreated._id
+                                    };
+                                    key = 'cover';
+                                }
+                                userController.update({_id: author._id}, {$set: dataChange})
+                                .then(result => {
+                                    res.json({
+                                        success: true,
+                                        data: postCreated,
+                                        infoImage: result[key]
+                                    })
+                                }).catch(err => {
+                                    res.json({
+                                        success: true,
+                                        data: postCreated,
+                                        infoImage: err
+                                    })
+                                });
+                            }
+                            else{
+                                res.json({
+                                    success: true,
+                                    data: postCreated,
+                                    infoImage: null
+                                })
+                            }
+                        })
+                    }).catch(err => {
+                        res.json({
+                            success: false,
+                            error: err,
+                            err: "Đã có lỗi xảy ra. Bạn hãy thử tải lại trang"
+                        });
+                    })
+                }).catch(err => {
+                    res.json({
+                        success: false,
+                        error: err,
+                        err: "Đã có lỗi xảy ra. Bạn hãy thử tải lại trang"
+                    });
+                })
+            }
+            else if(image == "" && infoImage){
+                var dataChange = {};
+                var key = "_id"
+                if(infoImage.avatar){
+                    dataChange = {
+                        'avatar.position': infoImage.avatar.position,
+                        'avatar.size': infoImage.avatar.size
+                    };
+                    key = "avatar";
+                }
+                else if(infoImage.cover){
+                    dataChange = {
+                        'cover.position': infoImage.cover.position,
+                        'cover.size': infoImage.cover.size
+                    };
+                    key = "cover";
+                }
+                userController.update({_id: author._id}, {$set: dataChange})
+                .populate(`${key}.origin`)
+                .then(result => {
+                    res.json({
+                        success: true,
+                        infoImage: {
+                            success: true,
+                            result: result[key]
+                        }
+                    });
+                }).catch(err => {
+                    res.json({
+                        success: false,
+                        infoImage: {
+                            success: false,
+                            err: err,
+                        },
+                        err: "Đã có lỗi xảy ra. Bạn hãy thử tải lại trang"
+                    });
+                });
+            }
+            else{
+                res.json({
+                    success: false,
+                    err: "Hãy chia sẻ một điều gì đó"
+                });
+            }
+        });
+    }
+    else{ 
+        res.json({
+            success: false,
+            err: "Vui lòng đăng nhập và thử lại"
+        });
+    }
+});
 postRouter.post("/post", (req, res) => {
     var author = req.session.userInfo;
     if(author){
