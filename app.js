@@ -34,7 +34,7 @@ app.use(cors({
     origin:['http://trang8.herokuapp.com', 'http://localhost:3000'],
     credentials: true}))
 app.use(session);
-if(0){
+if(1){
     app.use('', (req, res, next) => {
         req.session.userInfo = {
             _id: "user._id",
