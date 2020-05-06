@@ -30,9 +30,17 @@ mongoose.connect('mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test
 
 const app = express();
 
-app.use(cors({
-    origin:['http://trang8.herokuapp.com', 'http://localhost:3000'],
-    credentials: true}))
+var whitelist = ['http://trang8.herokuapp.com', 'http://localhost:3000'];
+var corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+app.use(cors(corsOptions));
 app.use(session);
 if(1){
     app.use('', (req, res, next) => {
