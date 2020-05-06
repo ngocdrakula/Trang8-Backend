@@ -32,6 +32,7 @@ const app = express();
 
 app.use(cors({
     origin:['http://trang8.herokuapp.com', 'http://localhost:3000'],
+    methods:['http://trang8.herokuapp.com', 'http://localhost:3000'],
     credentials: true}))
 app.use(session);
 if(0){
