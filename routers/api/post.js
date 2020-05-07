@@ -18,7 +18,7 @@ cloudinary.config({
 
 let diskStorage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "/");
+        callback(null, "/newphoto");
     },
     filename: (req, file, callback) => {
         let math = ["image/png", "image/jpeg", "image/gif"];
@@ -34,14 +34,14 @@ let diskStorage = multer.diskStorage({
 let uploadFile = (req, res, callback) => {
     multer({storage: diskStorage}).single("file")(req, res, (error) => {
         if(error || !req.file){
-            return callback(error);
+            return callback({...error, types: "multer"});
         }
         cloudinary.uploader.upload(
             req.file.path,
             { public_id: `photo/${req.file.filename}`}, // directory and tags are optional
             (err, image) => {
                 fs.unlinkSync(req.file.path);
-                return callback(err);
+                return callback({...err, types: "cloud"});
             }
         );
     });
