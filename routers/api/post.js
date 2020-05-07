@@ -8,7 +8,6 @@ const postController = require('../../controllers/post');
 const activeController = require('../../controllers/active');
 const userController = require('../../controllers/user');
 
-
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
     cloud_name: 'ngocdrakula',
@@ -18,7 +17,7 @@ cloudinary.config({
 
 let diskStorage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, __dirname + "/newphoto");
+        callback(null, "/tmp");
     },
     filename: (req, file, callback) => {
         let math = ["image/png", "image/jpeg", "image/gif"];
