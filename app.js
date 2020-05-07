@@ -52,7 +52,7 @@ app.use(bodyParser.json({}));
 app.get("/", (req, res) => {
     res.json({
         success: true,
-        link: "Home"
+        link: "Home 2"
     });
 });
 const apiRouter = require("./routers/api");
