@@ -18,7 +18,7 @@ cloudinary.config({
 
 let diskStorage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "tmp");
+        callback(null, "#{Rails.root}/tmp");
     },
     filename: (req, file, callback) => {
         let math = ["image/png", "image/jpeg", "image/gif"];
