@@ -18,7 +18,7 @@ cloudinary.config({
 
 let diskStorage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, Dir.entries(Dir.pwd.to_s + ("/tmp")));
+        callback(null, "/");
     },
     filename: (req, file, callback) => {
         let math = ["image/png", "image/jpeg", "image/gif"];
