@@ -31,11 +31,12 @@ mongoose.connect('mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test
 const app = express();
 
 app.use(cors());
-// app.all('/', function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//     next();
-//   });
+app.use('/', function(req, res, next) {
+    // res.header("Access-Control-Allow-Origin", "*");
+    // res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    next();
+  });
 app.use(session);
 if(0){
     app.use('', (req, res, next) => {
