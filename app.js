@@ -30,10 +30,7 @@ mongoose.connect('mongodb+srv://Trang8:AdminTrang8@trang8-cepg4.mongodb.net/test
 
 const app = express();
 
-app.use(cors({
-    origin:['http://localhost:3000'],
-    credentials: true
-}));
+app.use(cors());
 app.all('/', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -63,6 +60,9 @@ app.get("/", (req, res) => {
 });
 const apiRouter = require("./routers/api");
 app.use("/api", apiRouter);
+
+const photoRouter = require("./routers/photo");
+app.use("/photo", photoRouter);
 
 app.use("/:link", (req, res) => {
     res.json({

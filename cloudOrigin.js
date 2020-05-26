@@ -1,0 +1,1 @@
+module.exports = 'https://res.cloudinary.com/ngocdrakula/image/upload/v1588872129/photo/';

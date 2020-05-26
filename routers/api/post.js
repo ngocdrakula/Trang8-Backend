@@ -17,7 +17,7 @@ cloudinary.config({
 
 let diskStorage = multer.diskStorage({
     destination: (req, file, callback) => {
-        callback(null, "/tmp");
+        callback(null, "tmp");
     },
     filename: (req, file, callback) => {
         let math = ["image/png", "image/jpeg", "image/gif"];
@@ -25,22 +25,20 @@ let diskStorage = multer.diskStorage({
             let errorMess = "This type file is not allowed";
             return callback(errorMess, null);
         }
-        let filename = `${req.session.userInfo._id}_${Date.now()}${path.extname(file.originalname)}`;
-        console.log(file.originalname)
+        let filename = `${req.session.userInfo._id}_${Date.now()}`;
         callback(null, filename);
     }
 });
 let uploadFile = (req, res, callback) => {
     multer({storage: diskStorage}).single("file")(req, res, (error) => {
         if(error || !req.file){
-            return callback({...error, types: "multer"});
+            return callback(error);
         }
         cloudinary.uploader.upload(
             req.file.path,
             { public_id: `photo/${req.file.filename}`}, // directory and tags are optional
             (err, image) => {
-                fs.unlinkSync(req.file.path);
-                return callback({...err, types: "cloud"});
+                return callback(err);
             }
         );
     });
